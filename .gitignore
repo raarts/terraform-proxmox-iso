@@ -1,0 +1,6 @@
+cache
+build
+*/work
+.DS_Store
+terraform
+terraform.pub

@@ -1,0 +1,38 @@
+#!/bin/sh
+set -e
+set -x
+
+. ../build-iso.lib
+
+
+# check args and read config
+if [ ! -f "$1" ]
+then
+  echo "$1 not found, usage: $0 script-name"; 
+  exit 1; 
+fi
+
+. "$1"
+
+# define temp work dir
+WORK=work.$$
+
+# mount the (cached) iso there
+mount_iso $WORK "$URL"
+
+# Customize the writable copy.
+mkdir -p "$WORK/isolinux/ks"
+cp "$PRIVATE_KEY.pub" auto_resize_vda.sh $WORK
+cp_and_sed "isolinux.cfg.sed" "$WORK/isolinux/isolinux.cfg"
+cp_and_sed "ks.cfg.sed" "$WORK/isolinux/ks/ks.cfg"
+cp_and_sed sudoers.sed $WORK/sudoers
+cp_and_sed late_command.sh.sed $WORK/late_command.sh
+
+# Build the ISO
+build_iso terraform-$ISO $WORK "CentOS $VERSION $ARCH (TF)"
+
+# Cleanup
+rm -rf $WORK
+
+echo "Done"
+

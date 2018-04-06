@@ -1,0 +1,76 @@
+# functions for build-iso
+
+PLATFORM=$(uname)
+CACHEDIR=../cache
+
+mount_iso() {
+  TARGET="$1"
+  URL="$2"
+  ISO=`basename "$URL"`
+
+  mkdir -p "$CACHEDIR"
+  if [ ! -f "$CACHEDIR/$ISO" ]
+  then
+    curl -L -o "$CACHEDIR/$ISO" "$URL"
+  fi
+
+  echo Mounting ISO
+  if [ "$PLATFORM" = "Darwin" ]; then
+    # os x
+    MOUNTDIR=`mktemp -d -t 'build_iso-XXXXXXXXX'`
+    DEVNODE=$(sudo hdiutil attach -nomount "$CACHEDIR/$ISO" | head -1 | awk "{print \$1}")
+    sudo mount -t cd9660 "$DEVNODE" "$MOUNTDIR"
+  else
+    # linux
+    MOUNTDIR=`mktemp -d`
+    sudo mount -o loop "$CACHEDIR/$ISO" "$MOUNTDIR"
+  fi
+
+  echo Syncing files from ISO
+  rsync -a "$MOUNTDIR/" "$TARGET"
+  chmod -R +w "$TARGET"
+
+  echo Unmounting ISO
+  sudo umount "$MOUNTDIR"
+  if [ "$PLATFORM" = "Darwin" ]; then
+    sudo hdiutil eject "$DEVNODE"
+  fi
+  rm -rf "$MOUNTDIR"
+}
+
+cp_and_sed() {
+  sed \
+      -e "s;__VERSION__;$VERSION;g" \
+      -e "s;__HOST__;$HOST;g" \
+      -e "s;__DOMAIN__;$DOMAIN;g" \
+      -e "s;__KERNEL__;$KERNEL;g" \
+      -e "s;__ARCH__;$ARCH;g" \
+      -e "s;__ROOT_PASSWORD__;$ROOT_PASSWORD;g" \
+      -e "s;__USERNAME__;$USERNAME;g" \
+      -e "s;__PASSWORD__;$PASSWORD;g" \
+      -e "s;__PUBLIC_KEY__;$PRIVATE_KEY.pub;g" \
+      $1 > $2
+}
+
+build_iso() {
+  ISO="$1"
+  FROM="$2"
+  LABEL="$3"
+
+  chmod 664 $FROM/isolinux/isolinux.bin
+  mkdir -p ../build
+  mkisofs -b isolinux/isolinux.bin -c isolinux/boot.cat \
+          -no-emul-boot -boot-load-size 4 -boot-info-table \
+          -R -J -T -V "$LABEL" -o "../build/$ISO" "$FROM"
+  echo "Wrote: ../build/$ISO"
+}
+
+# SSH key to be authorized in virtual machines.
+: ${PRIVATE_KEY:="../terraform"}
+
+if [ ! -f "$PRIVATE_KEY" ]; then
+  ssh-keygen -t rsa -b 4096 -N "" -C "$USERNAME@$DOMAIN" -f "$PRIVATE_KEY"
+fi
+
+chmod 600 "$PRIVATE_KEY"
+
