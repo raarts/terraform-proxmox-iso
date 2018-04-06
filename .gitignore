@@ -1,6 +1,7 @@
 cache
 build
-*/work
+*/work.*
+*/temp.*
 .DS_Store
 terraform
 terraform.pub

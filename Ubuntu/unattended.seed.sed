@@ -32,7 +32,7 @@ d-i base-installer/kernel/override-image string __KERNEL__
 d-i passwd/root-password password __ROOT_PASSWORD__
 d-i passwd/root-password-again password __ROOT_PASSWORD__
 d-i passwd/user-uid string 1000
-d-i passwd/user-fullname string Vagrant
+d-i passwd/user-fullname string "Default User"
 d-i passwd/username string __USERNAME__
 d-i passwd/user-password password __PASSWORD__
 d-i passwd/user-password-again password __PASSWORD__

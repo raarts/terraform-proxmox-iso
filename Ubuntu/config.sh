@@ -13,8 +13,7 @@
 : ${HOST:="tfnode"}
 : ${DOMAIN:="terraform.io"}
 : ${ROOT_PASSWORD:=`openssl rand -base64 24`}
-: ${USERNAME:="terraform"}
-: ${PASSWORD:=`openssl rand -base64 24`}
+: ${USERNAME:="ubuntu"}
 : ${KERNEL:="linux-$([ "$ARCH" = "i386" ] && echo generic-pae || echo server)"}
 
 

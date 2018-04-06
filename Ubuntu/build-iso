@@ -2,7 +2,7 @@
 set -e
 set -x
 
-. ../build-iso.lib
+. ../util.lib
 
 
 # check args and read config
@@ -22,7 +22,7 @@ mount_iso $WORK "$URL"
 
 # Customize the writable copy.
 cp "isolinux.cfg" "$WORK/isolinux/"
-cp "$PRIVATE_KEY.pub" auto_resize_vda.sh $WORK
+cp "../$PRIVATE_KEY.pub" auto_resize_vda.sh $WORK
 cp_and_sed unattended.seed.sed $WORK/preseed/unattended.seed
 cp_and_sed late_command.sh.sed $WORK/late_command.sh
 cp_and_sed sudoers.sed $WORK/sudoers
@@ -32,6 +32,10 @@ build_iso terraform-$ISO $WORK "Ubuntu $VERSION $ARCH (TF)"
 
 # Cleanup
 #rm -rf $WORK
+
+echo Root Password: ${ROOT_PASSWORD}
+echo Default User: ${USERNAME}
+echo Password: ${PASSWORD}
 
 echo "Done."
 

@@ -66,11 +66,11 @@ build_iso() {
 }
 
 # SSH key to be authorized in virtual machines.
-: ${PRIVATE_KEY:="../terraform"}
+: ${PRIVATE_KEY:="terraform"}
 
-if [ ! -f "$PRIVATE_KEY" ]; then
-  ssh-keygen -t rsa -b 4096 -N "" -C "$USERNAME@$DOMAIN" -f "$PRIVATE_KEY"
+if [ ! -f "../$PRIVATE_KEY" ]; then
+  ssh-keygen -t rsa -b 4096 -N "" -C "$USERNAME@$DOMAIN" -f "../$PRIVATE_KEY"
 fi
 
-chmod 600 "$PRIVATE_KEY"
+chmod 600 "../$PRIVATE_KEY"
 

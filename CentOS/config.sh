@@ -17,7 +17,6 @@ ISONAME=`curl -s $MIRROR/0_README.txt | grep Minimal | grep .iso`
 : ${HOST:="tfnode"}
 : ${DOMAIN:="terraform.io"}
 : ${ROOT_PASSWORD:=`openssl rand -base64 24`}
-: ${USERNAME:="terraform"}
-: ${PASSWORD:=`openssl rand -base64 24`}
-
+: ${USERNAME:="centos"}
+: ${PASSWORD:="CentosPassword"}
 

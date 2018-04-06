@@ -16,10 +16,10 @@ lang en_US.UTF-8
 
 # Network information
 network  --bootproto=dhcp --device=eth0 --ipv6=auto --no-activate
-network  --hostname=centos-7-x8664-template.lve.novamntum.com
+network  --hostname=__HOST__
 
 # Root password
-rootpw --iscrypted $6$xXCnIsyNeWo3OKEU$EbayePex7kSrjg5FbgER.UOnLbXXzsiEWja8tlcYNPSRd41OjUUGp6lJ8Y2NxZ5oyIe6KqG/hWeoTOS6bvPIf.
+rootpw __ROOT_PASSWORD__
 # System services
 services --enabled="chronyd"
 # Do not configure the X Window System
@@ -31,6 +31,9 @@ bootloader --append=" crashkernel=auto" --location=mbr --boot-drive=sda
 autopart --type=lvm
 # Partition clearing information
 clearpart --all --initlabel --drives=sda
+
+# create default user
+user --name=__USERNAME__ --password=__PASSWORD__
 
 # Reboot when done
 reboot
@@ -44,6 +47,10 @@ kexec-tools
 
 %addon com_redhat_kdump --enable --reserve-mb='auto'
 
+%end
+
+%post --log=/root/ks-post.log
+/cdrom/late_command.sh
 %end
 
 %anaconda
