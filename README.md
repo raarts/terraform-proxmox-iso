@@ -47,14 +47,14 @@ This has been done this way, because OSX has no known way of encrypting sha512 p
 from the command line. 
 
 
-Building
---------
+How to use
+----------
 
 From the Ubuntu or CentOS directory, edit configuration in
 
 	config.sh
 
-Building ISO images:
+Now building the image:
 
 	./build-iso config.sh
 	
