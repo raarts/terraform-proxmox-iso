@@ -49,8 +49,8 @@ kexec-tools
 
 %end
 
-%post --log=/root/ks-post.log
-/cdrom/late_command.sh
+%post --nochroot --log=/mnt/sysimage/root/ks-post.log
+/run/install/repo/late_command.sh
 %end
 
 %anaconda

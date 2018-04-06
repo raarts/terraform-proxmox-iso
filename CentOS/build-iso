@@ -27,6 +27,7 @@ cp_and_sed "isolinux.cfg.sed" "$WORK/isolinux/isolinux.cfg"
 cp_and_sed "ks.cfg.sed" "$WORK/isolinux/ks/ks.cfg"
 cp_and_sed sudoers.sed $WORK/sudoers
 cp_and_sed late_command.sh.sed $WORK/late_command.sh
+chmod +x $WORK/late_command.sh
 
 # Build the ISO
 build_iso terraform-$ISO $WORK "CentOS $VERSION $ARCH (TF)"
